@@ -49,7 +49,7 @@ void setup() {
 
 void loop() {
   Serial.println("starting WebSocket client");
-  client.begin();
+  client.begin();       // to read from a specific path, pass the path name here. For example, `client.begin("/signalk/v1/stream")`
 
   while (client.connected()) {
     Serial.print("Sending hello ");
