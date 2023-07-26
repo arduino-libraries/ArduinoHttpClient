@@ -84,7 +84,7 @@ int HttpClient::startRequest(const char* aURLPath, const char* aHttpMethod,
     {
         if (iServerName)
         {
-            if (!(iClient->connect(iServerName, iServerPort) > 0))
+            if (iClient->connect(iServerName, iServerPort) < 1)
             {
 #ifdef LOGGING
                 Serial.println("Connection failed");
@@ -94,7 +94,7 @@ int HttpClient::startRequest(const char* aURLPath, const char* aHttpMethod,
         }
         else
         {
-            if (!(iClient->connect(iServerAddress, iServerPort) > 0))
+            if (iClient->connect(iServerAddress, iServerPort) < 1)
             {
 #ifdef LOGGING
                 Serial.println("Connection failed");
