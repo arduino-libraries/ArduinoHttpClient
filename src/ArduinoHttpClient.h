@@ -5,7 +5,7 @@
 #ifndef ArduinoHttpClient_h
 #define ArduinoHttpClient_h
 
-#include "HttpClient.h"
+#include "Http_Client.h"
 #include "WebSocketClient.h"
 #include "URLEncoder.h"
 

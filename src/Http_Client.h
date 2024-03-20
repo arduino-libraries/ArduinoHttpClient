@@ -2,8 +2,8 @@
 // (c) Copyright MCQN Ltd. 2010-2012
 // Released under Apache License, version 2.0
 
-#ifndef HttpClient_h
-#define HttpClient_h
+#ifndef Http_Client_h
+#define Http_Client_h
 
 #include <Arduino.h>
 #include <IPAddress.h>
