@@ -34,6 +34,7 @@ static const int HTTP_ERROR_INVALID_RESPONSE =-4;
 #define HTTP_HEADER_CONTENT_LENGTH "Content-Length"
 #define HTTP_HEADER_CONTENT_TYPE   "Content-Type"
 #define HTTP_HEADER_CONNECTION     "Connection"
+#define HTTP_HEADER_HOST           "Host"
 #define HTTP_HEADER_TRANSFER_ENCODING "Transfer-Encoding"
 #define HTTP_HEADER_USER_AGENT     "User-Agent"
 #define HTTP_HEADER_VALUE_CHUNKED  "chunked"
@@ -294,6 +295,10 @@ public:
     */
     void noDefaultRequestHeaders();
 
+    /** Enables using ServerAddress provided in ctor to be used for the Host header
+    */
+    void useServerAddressForHostHeader();
+
     // Inherited from Print
     // Note: 1st call to these indicates the user is sending the body, so if need
     // Note: be we should finish the header first
@@ -331,6 +336,10 @@ protected:
     */
     int sendInitialHeaders(const char* aURLPath,
                      const char* aHttpMethod);
+
+    /** Sends the host header.
+    */
+    void sendHostHeader();
 
     /* Let the server know that we've reached the end of the headers
     */
@@ -389,6 +398,7 @@ protected:
     uint32_t iHttpWaitForDataDelay;
     bool iConnectionClose;
     bool iSendDefaultRequestHeaders;
+    bool iUseServerAddressForHostHeader;
     String iHeaderLine;
 };
 

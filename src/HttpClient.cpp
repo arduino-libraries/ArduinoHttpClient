@@ -12,7 +12,7 @@ const char* HttpClient::kTransferEncodingChunked = HTTP_HEADER_TRANSFER_ENCODING
 
 HttpClient::HttpClient(Client& aClient, const char* aServerName, uint16_t aServerPort)
  : iClient(&aClient), iServerName(aServerName), iServerAddress(), iServerPort(aServerPort),
-   iConnectionClose(true), iSendDefaultRequestHeaders(true)
+   iConnectionClose(true), iSendDefaultRequestHeaders(true), iUseServerAddressForHostHeader(false)
 {
   resetState();
 }
@@ -24,7 +24,7 @@ HttpClient::HttpClient(Client& aClient, const String& aServerName, uint16_t aSer
 
 HttpClient::HttpClient(Client& aClient, const IPAddress& aServerAddress, uint16_t aServerPort)
  : iClient(&aClient), iServerName(NULL), iServerAddress(aServerAddress), iServerPort(aServerPort),
-   iConnectionClose(true), iSendDefaultRequestHeaders(true)
+   iConnectionClose(true), iSendDefaultRequestHeaders(true), iUseServerAddressForHostHeader(false)
 {
   resetState();
 }
@@ -57,6 +57,11 @@ void HttpClient::connectionKeepAlive()
 void HttpClient::noDefaultRequestHeaders()
 {
   iSendDefaultRequestHeaders = false;
+}
+
+void HttpClient::useServerAddressForHostHeader()
+{ 
+  iUseServerAddressForHostHeader = true;
 }
 
 void HttpClient::beginRequest()
@@ -158,17 +163,7 @@ int HttpClient::sendInitialHeaders(const char* aURLPath, const char* aHttpMethod
     if (iSendDefaultRequestHeaders)
     {
         // The host header, if required
-        if (iServerName)
-        {
-            iClient->print("Host: ");
-            iClient->print(iServerName);
-            if (iServerPort != kHttpPort)
-            {
-              iClient->print(":");
-              iClient->print(iServerPort);
-            }
-            iClient->println();
-        }
+        sendHostHeader();
         // And user-agent string
         sendHeader(HTTP_HEADER_USER_AGENT, kUserAgent);
     }
@@ -184,6 +179,32 @@ int HttpClient::sendInitialHeaders(const char* aURLPath, const char* aHttpMethod
     iState = eRequestStarted;
     return HTTP_SUCCESS;
 }
+
+void HttpClient::sendHostHeader() 
+{
+    if(iServerName || iUseServerAddressForHostHeader) 
+    {
+        iClient->print(HTTP_HEADER_HOST);
+        iClient->print(": ");
+
+        if (iServerName)
+        {
+            iClient->print(iServerName);
+        } 
+        else if(iUseServerAddressForHostHeader) 
+        {
+            iClient->print(iServerAddress);
+        }
+
+        if (iServerPort != kHttpPort)
+        {
+          iClient->print(":");
+          iClient->print(iServerPort);
+        }
+        iClient->println();
+    }
+}
+
 
 void HttpClient::sendHeader(const char* aHeader)
 {
