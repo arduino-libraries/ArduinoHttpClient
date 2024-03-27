@@ -51,6 +51,10 @@ int WebSocketClient::begin(const char* aPath)
         sendHeader("Connection", "Upgrade");
         sendHeader("Sec-WebSocket-Key", base64RandomKey);
         sendHeader("Sec-WebSocket-Version", "13");
+        
+        if(hasAuth) {
+			sendBasicAuth(_username, _password);
+		}
         endRequest();
 
         status = responseStatusCode();
@@ -71,6 +75,23 @@ int WebSocketClient::begin(const String& aPath)
 {
     return begin(aPath.c_str());
 }
+
+int WebSocketClient::begin(const char* username, const char* password)
+{
+	hasAuth = true;
+	_username = username;
+	_password = password;
+    return begin("/");
+}
+
+int WebSocketClient::begin(const String& aPath, const char* username, const char* password)
+{
+	hasAuth = true;
+	_username = username;
+	_password = password;
+    return begin(aPath.c_str());
+}
+
 
 int WebSocketClient::beginMessage(int aType)
 {
