@@ -819,7 +819,11 @@ int HttpClient::readHeader()
     case eReadingContentLength:
         if (isdigit(c))
         {
-            iContentLength = iContentLength*10 + (c - '0');
+            long _iContentLength = iContentLength*10 + (c - '0');
+            // Only apply if the value didn't wrap around
+            if (_iContentLength > iContentLength) {
+                iContentLength = _iContentLength;
+            }
         }
         else
         {
