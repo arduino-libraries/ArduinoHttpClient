@@ -26,6 +26,13 @@ public:
     WebSocketClient(Client& aClient, const String& aServerName, uint16_t aServerPort = HttpClient::kHttpPort);
     WebSocketClient(Client& aClient, const IPAddress& aServerAddress, uint16_t aServerPort = HttpClient::kHttpPort);
 
+    /** Start the Web Socket connection to the specified path with headers
+      @param aPath     Path to use in request
+      @param additionalHeaders  2D array with headers
+      @param headerRows  amount of rows in additionalHeaders array
+      @return 0 if successful, else error
+     */
+    int begin(const char* aPath, char* (*additionalHeaders)[2], size_t headerRows);
     /** Start the Web Socket connection to the specified path
       @param aURLPath     Path to use in request (optional, "/" is used by default)
       @return 0 if successful, else error

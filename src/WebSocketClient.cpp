@@ -12,7 +12,7 @@ WebSocketClient::WebSocketClient(Client& aClient, const char* aServerName, uint1
 {
 }
 
-WebSocketClient::WebSocketClient(Client& aClient, const String& aServerName, uint16_t aServerPort) 
+WebSocketClient::WebSocketClient(Client& aClient, const String& aServerName, uint16_t aServerPort)
  : HttpClient(aClient, aServerName, aServerPort),
    iTxStarted(false),
    iRxSize(0)
@@ -26,7 +26,7 @@ WebSocketClient::WebSocketClient(Client& aClient, const IPAddress& aServerAddres
 {
 }
 
-int WebSocketClient::begin(const char* aPath)
+int WebSocketClient::begin(const char* aPath, char* (*additionalHeaders)[2], size_t headerRows)
 {
     // start the GET request
     beginRequest();
@@ -51,6 +51,10 @@ int WebSocketClient::begin(const char* aPath)
         sendHeader("Connection", "Upgrade");
         sendHeader("Sec-WebSocket-Key", base64RandomKey);
         sendHeader("Sec-WebSocket-Version", "13");
+        for (size_t i = 0; i < headerRows; ++i)
+        {
+          sendHeader(additionalHeaders[i][0], additionalHeaders[i][1]);
+        }
         endRequest();
 
         status = responseStatusCode();
@@ -67,9 +71,14 @@ int WebSocketClient::begin(const char* aPath)
     return (status == 101) ? 0 : status;
 }
 
+int WebSocketClient::begin(const char* aPath)
+{
+    return begin(aPath, NULL, 0);
+}
+
 int WebSocketClient::begin(const String& aPath)
 {
-    return begin(aPath.c_str());
+    return begin(aPath.c_str(), NULL, 0);
 }
 
 int WebSocketClient::beginMessage(int aType)
@@ -174,7 +183,7 @@ size_t WebSocketClient::write(const uint8_t *aBuffer, size_t aSize)
     memcpy(iTxBuffer + iTxSize, aBuffer, aSize);
 
     iTxSize += aSize;
-    
+
     return aSize;
 }
 
@@ -217,14 +226,14 @@ int WebSocketClient::parseMessage()
     }
     else
     {
-        iRxSize = ((uint64_t)HttpClient::read() << 56) | 
-                    ((uint64_t)HttpClient::read() << 48) | 
-                    ((uint64_t)HttpClient::read() << 40) | 
-                    ((uint64_t)HttpClient::read() << 32) | 
-                    ((uint64_t)HttpClient::read() << 24) | 
-                    ((uint64_t)HttpClient::read() << 16) | 
+        iRxSize = ((uint64_t)HttpClient::read() << 56) |
+                    ((uint64_t)HttpClient::read() << 48) |
+                    ((uint64_t)HttpClient::read() << 40) |
+                    ((uint64_t)HttpClient::read() << 32) |
+                    ((uint64_t)HttpClient::read() << 24) |
+                    ((uint64_t)HttpClient::read() << 16) |
                     ((uint64_t)HttpClient::read() << 8)  |
-                    (uint64_t)HttpClient::read(); 
+                    (uint64_t)HttpClient::read();
     }
 
     // read in the mask, if present
