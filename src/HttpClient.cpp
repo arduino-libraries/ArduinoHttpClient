@@ -4,6 +4,7 @@
 
 #include "HttpClient.h"
 #include "b64.h"
+#include <limits.h>
 
 // Initialize constants
 const char* HttpClient::kUserAgent = "Arduino/2.2.0";
@@ -625,8 +626,12 @@ int HttpClient::available()
             else if (isHexadecimalDigit(c))
             {
                 char digit[2] = {c, '\0'};
+                int digitValue = (int)strtol(digit, NULL, 16);
 
-                iChunkLength = (iChunkLength * 16) + strtol(digit, NULL, 16);
+                // Only apply if the value fits in int without overflow.
+                if (iChunkLength <= ((INT_MAX - digitValue) / 16)) {
+                    iChunkLength = (iChunkLength * 16) + digitValue;
+                }
             }
         }
     }
