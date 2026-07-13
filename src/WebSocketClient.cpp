@@ -206,6 +206,26 @@ int WebSocketClient::parseMessage()
     iRxMasked = (length & 0x80);
     length &= 0x7f;
 
+    // work out how many extended length and mask bytes follow the
+    // initial opcode + length bytes
+    int extendedLength = 0;
+    if (length == 126)
+    {
+        extendedLength = 2;
+    }
+    else if (length == 127)
+    {
+        extendedLength = 8;
+    }
+    int maskLength = iRxMasked ? (int)sizeof(iRxMaskKey) : 0;
+
+    // make sure the remaining header bytes are available before reading
+    // them, otherwise the frame header is incomplete
+    if (HttpClient::available() < (extendedLength + maskLength))
+    {
+        return 0;
+    }
+
     // read the RX size
     iRxSize = length;
     if (length == 126)
