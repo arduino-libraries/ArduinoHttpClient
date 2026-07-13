@@ -827,10 +827,10 @@ int HttpClient::readHeader()
     case eReadingContentLength:
         if (isdigit(c))
         {
-            long _iContentLength = iContentLength*10 + (c - '0');
-            // Only apply if the value didn't wrap around
-            if (_iContentLength > iContentLength) {
-                iContentLength = _iContentLength;
+            int digitValue = c - '0';
+            // Only apply if the value fits in long without overflow.
+            if (iContentLength <= ((LONG_MAX - digitValue) / 10)) {
+                iContentLength = iContentLength * 10 + digitValue;
             }
         }
         else
