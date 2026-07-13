@@ -213,18 +213,30 @@ int WebSocketClient::parseMessage()
     }
     else if (length == 126)
     {
-        iRxSize = (HttpClient::read() << 8) | HttpClient::read();
+        // read each byte in a well-defined order (the evaluation order of
+        // multiple read() calls in a single expression is unspecified)
+        uint8_t b1 = HttpClient::read();
+        uint8_t b0 = HttpClient::read();
+        iRxSize = ((uint64_t)b1 << 8) | b0;
     }
     else
     {
-        iRxSize = ((uint64_t)HttpClient::read() << 56) | 
-                    ((uint64_t)HttpClient::read() << 48) | 
-                    ((uint64_t)HttpClient::read() << 40) | 
-                    ((uint64_t)HttpClient::read() << 32) | 
-                    ((uint64_t)HttpClient::read() << 24) | 
-                    ((uint64_t)HttpClient::read() << 16) | 
-                    ((uint64_t)HttpClient::read() << 8)  |
-                    (uint64_t)HttpClient::read(); 
+        uint8_t b7 = HttpClient::read();
+        uint8_t b6 = HttpClient::read();
+        uint8_t b5 = HttpClient::read();
+        uint8_t b4 = HttpClient::read();
+        uint8_t b3 = HttpClient::read();
+        uint8_t b2 = HttpClient::read();
+        uint8_t b1 = HttpClient::read();
+        uint8_t b0 = HttpClient::read();
+        iRxSize = ((uint64_t)b7 << 56) |
+                    ((uint64_t)b6 << 48) |
+                    ((uint64_t)b5 << 40) |
+                    ((uint64_t)b4 << 32) |
+                    ((uint64_t)b3 << 24) |
+                    ((uint64_t)b2 << 16) |
+                    ((uint64_t)b1 << 8)  |
+                    (uint64_t)b0;
     }
 
     // read in the mask, if present
