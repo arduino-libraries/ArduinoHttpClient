@@ -678,7 +678,10 @@ int HttpClient::read()
 
         if (iState == eReadingBodyChunk)
         {
-            iChunkLength--;
+            if (iChunkLength > 0)
+            {
+                iChunkLength--;
+            }
 
             if (iChunkLength == 0)
             {
