@@ -207,11 +207,8 @@ int WebSocketClient::parseMessage()
     length &= 0x7f;
 
     // read the RX size
-    if (length < 126)
-    {
-        iRxSize = length;
-    }
-    else if (length == 126)
+    iRxSize = length;
+    if (length == 126)
     {
         // read each byte in a well-defined order (the evaluation order of
         // multiple read() calls in a single expression is unspecified)
@@ -219,7 +216,7 @@ int WebSocketClient::parseMessage()
         uint8_t b0 = HttpClient::read();
         iRxSize = ((uint64_t)b1 << 8) | b0;
     }
-    else
+    else if (length == 127)
     {
         uint8_t b7 = HttpClient::read();
         uint8_t b6 = HttpClient::read();
