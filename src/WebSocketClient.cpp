@@ -167,7 +167,7 @@ size_t WebSocketClient::write(const uint8_t *aBuffer, size_t aSize)
     // check if the write size, fits in the buffer
     if ((iTxSize + aSize) > sizeof(iTxBuffer))
     {
-        aSize = sizeof(iTxSize) - iTxSize;
+        aSize = sizeof(iTxBuffer) - iTxSize;
     }
 
     // copy data into the buffer
