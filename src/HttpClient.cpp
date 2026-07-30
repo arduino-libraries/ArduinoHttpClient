@@ -863,5 +863,18 @@ int HttpClient::readHeader()
     return c;
 }
 
+int HttpClient::connect(IPAddress ip, uint16_t port) {
+    this->iServerName = NULL;
+    this->iServerAddress = ip;
+    this-> iServerPort = port;
+    return iClient->connect(ip, port);
+};
+int HttpClient::connect(const char *host, uint16_t port) {
+    this->iServerName = host;
+    this->iServerAddress = IPAddress();
+    this-> iServerPort = port;
+    return iClient->connect(host, port);
+};
+
 
 
