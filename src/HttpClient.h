@@ -295,6 +295,23 @@ public:
     */
     void noDefaultRequestHeaders();
 
+    /** Override the value used for the HTTP Host header.
+        Useful when connecting to an IP address (or an IP string) but needing
+        a specific virtual-host name in the Host header.
+
+        If not set (default), the Host header is generated from the server name
+        passed to the constructor. If the IPAddress constructor is used and no
+        override is set, no Host header is sent.
+    */
+    void setHostHeader(const char* aHostHeader);
+
+    void setHostHeader(const String& aHostHeader)
+      { setHostHeader(aHostHeader.c_str()); }
+
+    /** Clear a previously overridden Host header value.
+    */
+    void clearHostHeader();
+
     // Inherited from Print
     // Note: 1st call to these indicates the user is sending the body, so if need
     // Note: be we should finish the header first
@@ -390,6 +407,7 @@ protected:
     uint32_t iHttpWaitForDataDelay;
     bool iConnectionClose;
     bool iSendDefaultRequestHeaders;
+    String iHostHeader;
     String iHeaderLine;
 };
 

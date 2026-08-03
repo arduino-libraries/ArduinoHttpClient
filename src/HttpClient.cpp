@@ -29,6 +29,16 @@ HttpClient::HttpClient(Client& aClient, const IPAddress& aServerAddress, uint16_
   resetState();
 }
 
+void HttpClient::setHostHeader(const char* aHostHeader)
+{
+    iHostHeader = aHostHeader ? aHostHeader : "";
+}
+
+void HttpClient::clearHostHeader()
+{
+    iHostHeader = "";
+}
+
 void HttpClient::resetState()
 {
   iState = eIdle;
@@ -158,10 +168,20 @@ int HttpClient::sendInitialHeaders(const char* aURLPath, const char* aHttpMethod
     if (iSendDefaultRequestHeaders)
     {
         // The host header, if required
-        if (iServerName)
+        const bool hasCustomHostHeader = (iHostHeader.length() > 0);
+        const bool shouldSendHostHeader = hasCustomHostHeader || (iServerName != NULL);
+
+        if (shouldSendHostHeader)
         {
             iClient->print("Host: ");
-            iClient->print(iServerName);
+            if (hasCustomHostHeader)
+            {
+                iClient->print(iHostHeader);
+            }
+            else
+            {
+                iClient->print(iServerName);
+            }
             if (iServerPort != kHttpPort && iServerPort != kHttpsPort)
             {
               iClient->print(":");
