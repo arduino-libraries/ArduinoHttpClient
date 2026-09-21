@@ -779,7 +779,8 @@ int HttpClient::readHeader()
     case eStatusCodeRead:
         // We're at the start of a line, or somewhere in the middle of reading
         // the Content-Length prefix
-        if (*iContentLengthPtr == c)
+        if ((iTransferEncodingChunkedPtr == kTransferEncodingChunked) &&
+            (tolower((unsigned char)*iContentLengthPtr) == tolower((unsigned char)c)))
         {
             // This character matches, just move along
             iContentLengthPtr++;
@@ -793,7 +794,8 @@ int HttpClient::readHeader()
                 iBodyLengthConsumed = 0;
             }
         }
-        else if (*iTransferEncodingChunkedPtr == c)
+        else if ((iContentLengthPtr == kContentLengthPrefix) &&
+                 (tolower((unsigned char)*iTransferEncodingChunkedPtr) == tolower((unsigned char)c)))
         {
             // This character matches, just move along
             iTransferEncodingChunkedPtr++;
