@@ -311,8 +311,8 @@ public:
     virtual void flush() { iClient->flush(); };
 
     // Inherited from Client
-    virtual int connect(IPAddress ip, uint16_t port) { return iClient->connect(ip, port); };
-    virtual int connect(const char *host, uint16_t port) { return iClient->connect(host, port); };
+    virtual int connect(IPAddress ip, uint16_t port);
+    virtual int connect(const char *host, uint16_t port);
     virtual void stop();
     virtual uint8_t connected() { return iClient->connected(); };
     virtual operator bool() { return bool(iClient); };
