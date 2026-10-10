@@ -23,6 +23,13 @@ Derived from [Adrian McEwen's HttpClient library](https://github.com/amcewen/Htt
 
 In normal usage, handles the outgoing request and Host header.  The returned status code is parsed for you, as is the Content-Length header (if present).
 
+If you need to connect to a server by IP address (or IP string) but still send a specific virtual-host name in the `Host` header (common on shared hosting), you can override the Host header:
+
+```cpp
+HttpClient http(client, "93.184.216.34", 80); // connect by IP
+http.setHostHeader("mypageservices.com");     // send desired Host header
+```
+
 Because it expects an object of type Client, you can use it with any of the networking classes that derive from that.  Which means it will work with WiFiClient, EthernetClient and GSMClient.
 
 See the examples for more detail on how the library is used.
