@@ -8,21 +8,24 @@
 WebSocketClient::WebSocketClient(Client& aClient, const char* aServerName, uint16_t aServerPort)
  : HttpClient(aClient, aServerName, aServerPort),
    iTxStarted(false),
-   iRxSize(0)
+   iRxSize(0),
+   iRxMasked(false)
 {
 }
 
 WebSocketClient::WebSocketClient(Client& aClient, const String& aServerName, uint16_t aServerPort) 
  : HttpClient(aClient, aServerName, aServerPort),
    iTxStarted(false),
-   iRxSize(0)
+   iRxSize(0),
+   iRxMasked(false)
 {
 }
 
 WebSocketClient::WebSocketClient(Client& aClient, const IPAddress& aServerAddress, uint16_t aServerPort)
  : HttpClient(aClient, aServerAddress, aServerPort),
    iTxStarted(false),
-   iRxSize(0)
+   iRxSize(0),
+   iRxMasked(false)
 {
 }
 
