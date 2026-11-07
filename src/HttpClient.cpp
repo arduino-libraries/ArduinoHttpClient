@@ -137,7 +137,17 @@ int HttpClient::startRequest(const char* aURLPath, const char* aHttpMethod,
 
         if (hasBody)
         {
-                write(aBody, aContentLength);
+            int sent, written;
+            sent = 0;
+            while (sent < aContentLength)
+            {
+                written = write(&aBody[sent], aContentLength - sent);
+                if (written < 0)
+                {
+                    return HTTP_ERROR_SOCKET_CLIENT;
+                }
+                sent += written;
+            }
         }
     }
 
