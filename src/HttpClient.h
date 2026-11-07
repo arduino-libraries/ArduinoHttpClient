@@ -22,6 +22,8 @@ static const int HTTP_ERROR_TIMED_OUT =-3;
 // The response from the server is invalid, is it definitely an HTTP
 // server?
 static const int HTTP_ERROR_INVALID_RESPONSE =-4;
+// Socket client returned an error
+static const int HTTP_ERROR_SOCKET_CLIENT =-5;
 
 // Define some of the common methods and headers here
 // That lets other code reuse them without having to declare another copy
